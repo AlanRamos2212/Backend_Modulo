@@ -3,9 +3,11 @@ package com.module.divisiones.service;
 import org.springframework.stereotype.Service;
 
 import com.module.divisiones.dto.DivisionCreateDTO;
+import com.module.divisiones.dto.DivisionDeleteDTO;
 import com.module.divisiones.dto.DivisionResponseDTO;
 import com.module.divisiones.entity.Division;
 import com.module.divisiones.entity.EstatusDivision;
+import com.module.divisiones.exception.ResourceNotFoundException;
 import com.module.divisiones.repository.DivisionRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -26,5 +28,17 @@ public class DivisionService {
 
         Division saved = divisionRepository.save(division);
         return DivisionResponseDTO.fromEntity(saved);
+    }
+
+    public DivisionDeleteDTO delete(Integer id) {
+        if (!divisionRepository.existsById(id)) {
+            throw new ResourceNotFoundException("No se encontró la división con id: " + id);
+        }
+        divisionRepository.deleteById(id);
+
+        DivisionDeleteDTO response = new DivisionDeleteDTO();
+        response.setId(id);
+        response.setMensaje("La división con id " + id + " fue eliminada correctamente.");
+        return response;
     }
 }
