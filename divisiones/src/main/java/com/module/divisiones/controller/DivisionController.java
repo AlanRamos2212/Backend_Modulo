@@ -2,6 +2,7 @@ package com.module.divisiones.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.module.divisiones.dto.DivisionCreateDTO;
+import com.module.divisiones.dto.DivisionDeleteDTO;
 import com.module.divisiones.dto.DivisionResponseDTO;
 import com.module.divisiones.service.DivisionService;
 
@@ -33,6 +35,12 @@ public class DivisionController {
     public ResponseEntity<DivisionResponseDTO> actualizar(@PathVariable Integer id,
             @Valid @RequestBody DivisionCreateDTO dto) {
         DivisionResponseDTO response = divisionService.update(id, dto);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<DivisionDeleteDTO> eliminar(@PathVariable Integer id) {
+        DivisionDeleteDTO response = divisionService.delete(id);
         return ResponseEntity.ok(response);
     }
 }

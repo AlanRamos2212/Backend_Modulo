@@ -5,9 +5,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.module.divisiones.dto.DivisionCreateDTO;
+import com.module.divisiones.dto.DivisionDeleteDTO;
 import com.module.divisiones.dto.DivisionResponseDTO;
 import com.module.divisiones.entity.Division;
 import com.module.divisiones.entity.EstatusDivision;
+import com.module.divisiones.exception.ResourceNotFoundException;
 import com.module.divisiones.repository.DivisionRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -32,7 +34,7 @@ public class DivisionService {
 
     public DivisionResponseDTO update(Integer id, DivisionCreateDTO dto) {
         Division division = divisionRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Division no encontrada"));
+                .orElseThrow(() -> new ResourceNotFoundException("Division no encontrada"));
 
         division.setNombre(dto.getNombre());
         division.setSiglas(dto.getSiglas());
@@ -42,5 +44,18 @@ public class DivisionService {
 
         Division saved = divisionRepository.save(division);
         return DivisionResponseDTO.fromEntity(saved);
+    }
+
+    public DivisionDeleteDTO delete(Integer id) {
+        if (!divisionRepository.existsById(id)) {
+            throw new ResourceNotFoundException("No se encontró la división con id: " + id);
+        }
+
+        divisionRepository.deleteById(id);
+
+        DivisionDeleteDTO response = new DivisionDeleteDTO();
+        response.setId(id);
+        response.setMensaje("La división con id " + id + " fue eliminada correctamente.");
+        return response;
     }
 }
