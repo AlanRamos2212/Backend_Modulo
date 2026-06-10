@@ -1,6 +1,8 @@
 package com.module.divisiones.service;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.module.divisiones.dto.DivisionCreateDTO;
 import com.module.divisiones.dto.DivisionDeleteDTO;
@@ -30,10 +32,25 @@ public class DivisionService {
         return DivisionResponseDTO.fromEntity(saved);
     }
 
+    public DivisionResponseDTO update(Integer id, DivisionCreateDTO dto) {
+        Division division = divisionRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Division no encontrada"));
+
+        division.setNombre(dto.getNombre());
+        division.setSiglas(dto.getSiglas());
+        division.setDescripcion(dto.getDescripcion());
+        division.setSlug(dto.getSlug());
+        division.setEstatus(EstatusDivision.valueOf(dto.getEstatus()));
+
+        Division saved = divisionRepository.save(division);
+        return DivisionResponseDTO.fromEntity(saved);
+    }
+
     public DivisionDeleteDTO delete(Integer id) {
         if (!divisionRepository.existsById(id)) {
             throw new ResourceNotFoundException("No se encontró la división con id: " + id);
         }
+
         divisionRepository.deleteById(id);
 
         DivisionDeleteDTO response = new DivisionDeleteDTO();

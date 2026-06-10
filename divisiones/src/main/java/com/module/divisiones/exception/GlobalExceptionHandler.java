@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.module.divisiones.exception.ResourceNotFoundException;
 
 import com.module.divisiones.dto.ErrorResponseDTO;
+import com.module.divisiones.exception.ResourceNotFoundException;
 
 import jakarta.servlet.http.HttpServletRequest;
 
