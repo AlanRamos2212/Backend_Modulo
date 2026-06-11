@@ -1,5 +1,7 @@
 package com.module.divisiones.service;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -19,6 +21,18 @@ import lombok.RequiredArgsConstructor;
 public class DivisionService {
 
     private final DivisionRepository divisionRepository;
+
+    public List<DivisionResponseDTO> findAll() {
+        return divisionRepository.findAll().stream()
+                .map(DivisionResponseDTO::fromEntity)
+                .toList();
+    }
+
+    public DivisionResponseDTO findById(Integer id) {
+        Division division = divisionRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontró la división con id: " + id));
+        return DivisionResponseDTO.fromEntity(division);
+    }
 
     public DivisionResponseDTO create(DivisionCreateDTO dto) {
         Division division = new Division();
